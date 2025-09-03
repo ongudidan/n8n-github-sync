@@ -1,39 +1,43 @@
-## 📝 n8n GitHub Sync Guide
+## 📝 n8n GitHub Sync Notes
 
 ### Prerequisites
 
-* Docker + Git installed.
-* n8n container already running with a **Docker volume** named `n8n_data`.
-* GitHub PAT with `repo` access.
-* Repo `n8n-backup` created in your GitHub account.
-* Scripts cloned:
+* Docker + Git installed on the server.
+* A running n8n container that uses a **Docker volume** (default: `n8n_data`).
 
-  ```
-  git clone https://github.com/ongudidan/n8n-github-sync.git
-  cd n8n-github-sync
-  ```
+  * The volume name can be:
+
+    * `n8n_data` (default), or
+    * a custom one you set when creating your container.
+* A GitHub repository (private or public) where backups will be stored.
+
+  * Repo name can be anything you choose (example: `n8n-backup`).
+* A **GitHub Personal Access Token (PAT)** with at least `repo` permissions.
+
+  * PAT = a token you generate from GitHub that replaces your password when using HTTPS.
+  * Generate it here: **GitHub → Settings → Developer Settings → Personal Access Tokens → Tokens (classic)**.
 
 ---
 
-### Config in both scripts
+### Config inside the scripts
 
-Edit these variables:
+Update the values at the top of both scripts:
 
 ```
-VOLUME_NAME="n8n_data"
-GITHUB_USERNAME="ongudidan"
-GITHUB_REPO="n8n-backup"
-GITHUB_PAT="ghp_xxxxxxxx"   # replace with your PAT
-BRANCH="main"
+VOLUME_NAME="n8n_data"          # Docker volume name (adjust if different)
+GITHUB_USERNAME="your-username" # Your GitHub username
+GITHUB_REPO="your-repo-name"    # Repo you created for backups
+GITHUB_PAT="ghp_xxxxxxxx"       # Your GitHub Personal Access Token (PAT)
+BRANCH="main"                   # Branch to use in the repo
 ```
 
 ---
 
 ### Backup script (`n8n-backup.sh`)
 
-* Finds `n8n_data` volume path.
-* If no `.git` → initializes repo, commits everything, pushes.
-* If `.git` exists → commits only changes and pushes.
+* Finds the Docker volume path.
+* If it’s the first run (no `.git`) → initializes repo, commits all data, pushes to GitHub.
+* On later runs → commits only changes and pushes.
 
 Run manually:
 
@@ -45,13 +49,13 @@ Run manually:
 
 ### Restore script (`n8n-restore.sh`)
 
-* Checks if the volume exists → creates if missing.
-* If `.git` exists inside → warns and stops.
+* Checks if the Docker volume exists → creates it if missing.
+* If `.git` exists in the volume → stops to avoid overwriting.
 * Otherwise:
 
-  * Clones repo to a temp folder.
+  * Clones the GitHub backup repo into a temp folder.
   * Copies data into the volume.
-  * Cleans up.
+  * Cleans up the temp folder.
 
 Run manually:
 
@@ -69,7 +73,7 @@ Edit crontab:
 crontab -e
 ```
 
-Run **every minute**:
+Run backup **every minute**:
 
 ```
 * * * * * /home/youruser/n8n-github-sync/n8n-backup.sh >/dev/null 2>&1
@@ -85,14 +89,23 @@ If root access is required for Docker volumes:
 
 ### What gets backed up
 
-* The **volume contents** (workflows, executions, credentials).
-* **Not backed up**: environment variables.
+* The **contents of your n8n Docker volume** (workflows, credentials, execution history).
+* **Not backed up**: environment variables like:
+
+  ```
+  -e WEBHOOK_URL=...
+  -e VUE_APP_URL_BASE_API=...
+  -e N8N_HOST=...
+  -e N8N_PORT=...
+  ```
+
+  These must be set again when starting your container.
 
 ---
 
-### n8n container run command
+### Running n8n container
 
-On a fresh server, restore the data, then run n8n like this:
+Example run command:
 
 ```
 docker run -d \
@@ -101,8 +114,8 @@ docker run -d \
   -v n8n_data:/home/node/.n8n \
   -e N8N_HOST=0.0.0.0 \
   -e N8N_PORT=5678 \
-  -e WEBHOOK_URL=https://n8n.fortunedevs.com/ \
-  -e VUE_APP_URL_BASE_API=https://n8n.fortunedevs.com/ \
+  -e WEBHOOK_URL=https://n8n.example.com/ \
+  -e VUE_APP_URL_BASE_API=https://n8n.example.com/ \
   docker.n8n.io/n8nio/n8n
 ```
 
@@ -111,18 +124,18 @@ docker run -d \
 ### Recovery on a new server
 
 1. Install Docker + Git.
-2. Clone scripts:
+2. Clone the scripts:
 
    ```
-   git clone https://github.com/ongudidan/n8n-github-sync.git
+   git clone https://github.com/<your-username>/n8n-github-sync.git
    cd n8n-github-sync
    ```
-3. Edit `n8n-restore.sh` with your PAT.
+3. Edit `n8n-restore.sh` config with your volume name, repo, and PAT.
 4. Run restore:
 
    ```
    ./n8n-restore.sh
    ```
-5. Start container with the command above.
+5. Start the n8n container with your chosen run command (make sure env vars are set).
 
 ---
