@@ -28,10 +28,6 @@ cd "$VOLUME_PATH" || exit 1
 # Mark directory as safe for git (avoids dubious ownership errors)
 git config --global --add safe.directory "$VOLUME_PATH"
 
-# Always force Git identity (per repo, works even under sudo/root)
-git config --local user.email "backup-bot@example.com"
-git config --local user.name "n8n Backup Bot"
-
 # === FIRST TIME SETUP ===
 if [ ! -d ".git" ]; then
     echo "🚀 Initializing Git repo in $VOLUME_PATH"
@@ -39,11 +35,15 @@ if [ ! -d ".git" ]; then
     git init
     git checkout -b "$BRANCH"
 
+    # Now that .git exists, set identity
+    git config user.email "backup-bot@example.com"
+    git config user.name "n8n Backup Bot"
+
     git remote add origin "https://${GITHUB_PAT}@github.com/${GITHUB_USERNAME}/${GITHUB_REPO}.git"
 
     git add .
 
-    # If nothing to commit, create a README to allow first commit
+    # If nothing to commit, create a dummy file so first push succeeds
     if git diff --cached --quiet; then
         echo "# n8n Backup Repo" > README.md
         git add README.md
