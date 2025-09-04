@@ -36,11 +36,11 @@ nano n8n-backup.sh
 Edit:
 
 ```bash
-VOLUME_NAME="n8n_data"
-GITHUB_USERNAME="your-username"
-GITHUB_REPO="your-repo-name"
-GITHUB_PAT="ghp_xxxxxxxx"
-BRANCH="main"
+VOLUME_NAME="n8n_data"          # Docker volume name (adjust if different)
+GITHUB_USERNAME="your-username" # Your GitHub username
+GITHUB_REPO="your-repo-name"    # Repo you created for backups
+GITHUB_PAT="ghp_xxxxxxxx"       # Your GitHub Personal Access Token (PAT)
+BRANCH="main"                   # Branch to restore from
 ```
 
 Save and exit.
@@ -111,11 +111,11 @@ nano n8n-restore.sh
 Edit:
 
 ```bash
-VOLUME_NAME="n8n_data"
-GITHUB_USERNAME="your-username"
-GITHUB_REPO="your-repo-name"
-GITHUB_PAT="ghp_xxxxxxxx"
-BRANCH="main"
+VOLUME_NAME="n8n_data"          # Docker volume name (adjust if different)
+GITHUB_USERNAME="your-username" # Your GitHub username
+GITHUB_REPO="your-repo-name"    # Repo you created for backups
+GITHUB_PAT="ghp_xxxxxxxx"       # Your GitHub Personal Access Token (PAT)
+BRANCH="main"                   # Branch to restore from
 ```
 
 Save and exit.
