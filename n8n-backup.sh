@@ -28,25 +28,31 @@ cd "$VOLUME_PATH" || exit 1
 # Mark directory as safe for git (avoids dubious ownership errors)
 git config --global --add safe.directory "$VOLUME_PATH"
 
-# Force Git identity (works even under sudo/root)
+# Always force Git identity (per repo, works even under sudo/root)
 git config --local user.email "backup-bot@example.com"
 git config --local user.name "n8n Backup Bot"
 
-# If this is the first time (no .git folder)
+# === FIRST TIME SETUP ===
 if [ ! -d ".git" ]; then
     echo "🚀 Initializing Git repo in $VOLUME_PATH"
 
     git init
-
-    # Ensure branch exists
     git checkout -b "$BRANCH"
 
     git remote add origin "https://${GITHUB_PAT}@github.com/${GITHUB_USERNAME}/${GITHUB_REPO}.git"
 
     git add .
-    git commit -m "Initial backup: $(date '+%Y-%m-%d %H:%M:%S')"
-    git push -u origin "$BRANCH"
 
+    # If nothing to commit, create a README to allow first commit
+    if git diff --cached --quiet; then
+        echo "# n8n Backup Repo" > README.md
+        git add README.md
+    fi
+
+    git commit -m "Initial backup: $(date '+%Y-%m-%d %H:%M:%S')"
+    git push -u origin "$BRANCH" || git push -u origin HEAD:"$BRANCH"
+
+# === SUBSEQUENT BACKUPS ===
 else
     echo "🔄 Repository already initialized. Checking for changes..."
 
