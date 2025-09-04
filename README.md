@@ -40,10 +40,17 @@ BRANCH="main"                   # Branch to use in the repo
 ---
 
 ### Backup script (`n8n-backup.sh`)
-
+``
 * Finds the Docker volume path.
 * If it’s the first run (no `.git`) → initializes repo, commits all data, pushes to GitHub.
 * On later runs → commits only changes and pushes.
+
+* Clone the scripts:
+
+   ```
+   git clone https://github.com/ongudidan/n8n-github-sync.git
+   cd n8n-github-sync
+   ```
 
 Run manually:
 
