@@ -1,10 +1,10 @@
 # 📤 BACKUP: Save n8n data to GitHub
 
-1. **Install Docker and Git**
+1. **Install Git** (Docker is already installed and running for backup)
 
 ```bash
 sudo apt update
-sudo apt install -y docker.io git
+sudo apt install -y git
 ```
 
 2. **Create a GitHub repo + PAT**
@@ -80,7 +80,7 @@ Add:
 
 # 📥 RESTORE: Recover n8n data from GitHub
 
-1. **Install Docker and Git**
+1. **Install Docker and Git** (needed here if restoring on a fresh server)
 
 ```bash
 sudo apt update
@@ -152,6 +152,8 @@ docker run -d \
 
 👉 This way:
 
-* **Backup** has the `visudo` step (to avoid password prompts in cron).
-* **Restore** skips `visudo` (you only run it once, password prompt is fine).
-* **Path in visudo** is explicitly user-dependent, not assumed.
+* **Backup** assumes Docker is already running, only installs `git`.
+* **Restore** assumes a fresh server (installs both `docker.io` + `git`).
+* **visudo step** only appears in backup, for cron automation.
+
+---
