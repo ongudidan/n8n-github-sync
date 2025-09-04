@@ -54,3 +54,4 @@ rm -rf "$TMP_DIR"
 
 echo "✅ Restore completed into $VOLUME_PATH"
 echo "👉 You can now restart your n8n container: docker restart <container_name>"
+
