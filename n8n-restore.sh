@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # === CONFIG ===
-VOLUME_NAME="n8n_data"
-GITHUB_USERNAME="ongudidan"
-GITHUB_REPO="n8n-backup"
-GITHUB_PAT="ghp_xxxxxxxx"   # <-- replace with your PAT
-BRANCH="main"
+VOLUME_NAME="n8n_data"          # Docker volume name (adjust if different)
+GITHUB_USERNAME="your-username" # Your GitHub username
+GITHUB_REPO="your-repo-name"    # Repo you created for backups
+GITHUB_PAT="ghp_xxxxxxxx"       # Your GitHub Personal Access Token (PAT)
+BRANCH="main"                   # Branch to use in the repo
 
 # === SCRIPT START ===
 
