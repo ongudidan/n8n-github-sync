@@ -45,7 +45,12 @@ git config --global --add safe.directory "$TMP_DIR"
 # Copy repo contents into the volume (excluding .git)
 rsync -a --exclude='.git' "$TMP_DIR"/ "$VOLUME_PATH"/
 
+# Fix permissions (match n8n container user: node -> 1000:1000)
+echo "🔧 Fixing file ownership for n8n..."
+chown -R 1000:1000 "$VOLUME_PATH"
+
 # Cleanup
 rm -rf "$TMP_DIR"
 
 echo "✅ Restore completed into $VOLUME_PATH"
+echo "👉 You can now restart your n8n container: docker restart <container_name>"
