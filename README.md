@@ -16,6 +16,12 @@
 
   * PAT = a token you generate from GitHub that replaces your password when using HTTPS.
   * Generate it here: **GitHub → Settings → Developer Settings → Personal Access Tokens → Tokens (classic)**.
+* If your script requires `sudo` (for Docker volume access), configure **passwordless sudo** for your user.
+  Add with `sudo visudo` (replace `youruser` with your actual Linux username):
+
+  ```
+  youruser ALL=(ALL) NOPASSWD: /home/youruser/n8n-github-sync/n8n-backup.sh
+  ```
 
 ---
 
@@ -45,6 +51,12 @@ Run manually:
 ./n8n-backup.sh
 ```
 
+(or, if root access is required)
+
+```
+sudo ./n8n-backup.sh
+```
+
 ---
 
 ### Restore script (`n8n-restore.sh`)
@@ -67,23 +79,27 @@ Run manually:
 
 ### Automating backup with cron
 
-Edit crontab:
+Edit your crontab:
 
 ```
 crontab -e
 ```
 
-Run backup **every minute**:
+Run backup **every minute**. You can use either:
+
+**Option 1 (portable, works for most users):**
 
 ```
-* * * * * /home/youruser/n8n-github-sync/n8n-backup.sh >/dev/null 2>&1
+* * * * * sudo ~/n8n-github-sync/n8n-backup.sh >/dev/null 2>&1
 ```
 
-If root access is required for Docker volumes:
+**Option 2 (safer, always works if `~` isn’t expanded):**
 
 ```
 * * * * * sudo /home/youruser/n8n-github-sync/n8n-backup.sh >/dev/null 2>&1
 ```
+
+Replace `youruser` with your actual Linux username.
 
 ---
 
