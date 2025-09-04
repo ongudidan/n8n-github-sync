@@ -143,7 +143,7 @@ docker run -d \
 2. Clone the scripts:
 
    ```
-   git clone https://github.com/<your-username>/n8n-github-sync.git
+   git clone https://github.com/ongudidan/n8n-github-sync.git
    cd n8n-github-sync
    ```
 3. Edit `n8n-restore.sh` config with your volume name, repo, and PAT.
