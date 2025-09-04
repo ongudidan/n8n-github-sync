@@ -19,6 +19,9 @@ fi
 
 cd "$VOLUME_PATH" || exit 1
 
+# Mark directory as safe (avoids "dubious ownership" error)
+git config --global --add safe.directory "$VOLUME_PATH"
+
 # If this is the first time (no .git folder)
 if [ ! -d ".git" ]; then
     echo "🚀 Initializing Git repo in $VOLUME_PATH"
@@ -26,7 +29,7 @@ if [ ! -d ".git" ]; then
     git init
     git branch -M "$BRANCH"
 
-    # Configure git identity (customize if you want)
+    # Configure git identity (per repo, so no global user setup needed)
     git config user.email "backup-bot@example.com"
     git config user.name "n8n Backup Bot"
 
@@ -34,7 +37,9 @@ if [ ! -d ".git" ]; then
 
     git add .
     git commit -m "Initial backup: $(date '+%Y-%m-%d %H:%M:%S')"
-    git push -u origin "$BRANCH"
+
+    # Ensure branch exists before pushing
+    git push -u origin "$BRANCH" || git push -u origin HEAD:"$BRANCH"
 
 else
     echo "🔄 Repository already initialized. Checking for changes..."
