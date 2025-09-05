@@ -10,7 +10,8 @@ sudo apt install -y git
 2. **Create a GitHub repo + PAT**
 
 * Create a repo (example: `n8n-backup`)
-* Generate a **Personal Access Token (PAT)** with `repo` permission
+* Create a **Personal Access Token (PAT)** with at least **repo** permission:
+  GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic).
 
 3. **Clone the helper scripts**
 
