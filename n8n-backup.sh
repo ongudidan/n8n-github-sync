@@ -65,7 +65,7 @@ if [ ! -d ".git" ]; then
     fi
 
     git commit -m "Initial backup: $(date '+%Y-%m-%d %H:%M:%S')"
-    git push -u origin "$BRANCH" || git push -u origin HEAD:"$BRANCH"
+    git push -u --force origin "$BRANCH" || git push -u --force origin HEAD:"$BRANCH"
 
 # === SUBSEQUENT BACKUPS ===
 else
@@ -91,7 +91,6 @@ else
         echo "✅ No changes to commit."
     fi
 fi
-
 
 
 
